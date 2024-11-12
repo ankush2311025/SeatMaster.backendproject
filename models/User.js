@@ -14,6 +14,9 @@ name:{
     required : true
     
 },
+is_verified: {
+    type: Boolean
+},
 bookedSeats:[{
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Seat'
