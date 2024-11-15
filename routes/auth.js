@@ -5,7 +5,7 @@ import User from '../models/User.js';
 
 const router = express.Router();  
 
-//generate token 
+
 const generateAccessToken = (user) => {
     return jwt.sign(
         {id:user._id,},
@@ -69,10 +69,10 @@ router.post('/signin', async (req, res) => {
             return res.status(500).json({ error: 'Server error' });
         }
 
-        //generate tokens
+        
        const accessToken = generateAccessToken(user);
         const refreshToken = generateRefreshToken(user);
-//set access token 
+
         res.cookie('token', accessToken,{
         httpOnly:true,
          secure: true,
@@ -87,6 +87,7 @@ router.post('/signin', async (req, res) => {
                 id: user._id,
                 name: user.name,    
                 email: user.email,  
+                seatno: user.seatNumber,
             }
         });
 
@@ -96,35 +97,5 @@ router.post('/signin', async (req, res) => {
     }
     });    
 
-    // refresh access token
-    router.post('/token', async (req,res) => {
-        const { refreshToken} = req.body;
-
-        if(!refreshToken) {
-            return res.status(401).json({error: 'Refresh token required'});
-        }
-        try{
-            const decoded = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET);
-            const user = await User.findById(decoded.id);
-
-            if(!user) {
-                return res.status(403).json({error: 'Invalid refresh token'});
-            }
-
-            const newAccessToken = generateAccessToken(user);
-
-            res.cookie('token', newAccessToken,{
-                httpOnly:true,
-                secure:true,
-                maxAge:'3600s'
-            });
-
-            res.json({message:'Access token refreshed'});
-        }catch(err) {
-            console.error(err);
-            res.status(403).json({error: 'Invalid or expired refresh token'})
-        }
-    });
-
-
+   
 export default router; 

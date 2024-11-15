@@ -5,6 +5,8 @@ import mongoose from "mongoose";
 //import bodyParser from "body-parser"; 
 import authRoutes from "./routes/auth.js"; 
 import User from "./models/User.js";
+import seatRoutes from "./routes/seat.js";
+//import Seat from "./models/Seat.js";
 import passport from "passport";
 import { Strategy as GoogleStrategy } from "passport-google-oauth20";
 import dotenv from "dotenv";
@@ -109,8 +111,6 @@ const generateTokens = async (user) => {
   
   app.get('/auth/google', googleAuth);
   app.get('/auth/google/callback', passport.authenticate('google', { failureRedirect: '/' }), googleAuthCallback);
-  
-
 
 //app.use(bodyParser.json());
 //app.use(cors());
@@ -122,6 +122,7 @@ mongoose.connect(process.env.MONGODB_URI,)
 
 //Routes
 app.use('/api/auth',authRoutes);
+app.use('/api/seat',seatRoutes);
 
 
 app.listen(PORT, () => {
