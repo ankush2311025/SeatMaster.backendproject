@@ -4,6 +4,14 @@ const SeatSchema = new mongoose.Schema({
     seatNumber: {
         type : String,
     },
+<<<<<<< HEAD
+=======
+    Status: {
+        type: String,
+        enum:['empty', 'occupied', 'reserved'],
+        default:'reserved',
+    },
+>>>>>>> ee553fac462682d1435573af417f65d36d472b20
     price:{
         type: Number,
         require: true
@@ -24,4 +32,7 @@ const SeatSchema = new mongoose.Schema({
      
 });
 const Seat = mongoose.model('Seat', SeatSchema)
+<<<<<<< HEAD
 export default Seat;
+=======
+>>>>>>> ee553fac462682d1435573af417f65d36d472b20
