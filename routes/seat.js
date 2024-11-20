@@ -18,11 +18,11 @@ router.post('/bookseat', async (req, res) => {
     }
 
     try {
-        const { price } = Section[section];
+      //  const { price } = Section[section];
 
         const newSeat = new Seat({
             seatNumber,
-            price,
+           // price,
             section,
         });
 
@@ -33,7 +33,28 @@ router.post('/bookseat', async (req, res) => {
     }
 });
 
+router.post('/reserve', async (req,res) =>{
+    const { userId, seatNumber} = req.body;
+    try{
+        const seat = await Seat.findOne({seatNumber});
 
+        if (!seat|| seat.status !=='empty'){
+            return res.status(400).json({
+                message: "Seat is not available",
+                
+            });
+        }
+        Seat.status = "reserved";
+        Seat.booked = userId;
+        await seat .save();
+
+        res.json({
+            message: "Seat is reserved",
+        });
+    }catch(err){
+        res.status(500).send("error");
+    }
+});
 
 
 router.get('/seatsinfo', async (req, res) => {
@@ -53,7 +74,7 @@ router.get('/seatsinfo', async (req, res) => {
 
     if (!seatId|| !userId  || !section || !Section[section]) {
         return res.status(400).json({
-            message: "Seat  and price must be provided  "
+            message: "SeatId , section , userId and price must be provided  "
         });
     }
      try{
