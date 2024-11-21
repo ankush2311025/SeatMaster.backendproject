@@ -5,11 +5,16 @@ import Seat from "../models/Seat.js";
 const router = express.Router();
 
 const Section = {
-    VIP:{ price: 500, range:[151,200]},
-    Normal:{ price : 300, range: [100,150]},
-    Economy:{ price: 150, range: [1,99]},
+    VIP:{ price: 500,
+         range:[151,200]},
+    Normal:{ price : 300,
+         range: [100,150]},
+    Economy:{ price: 150, 
+        range: [1,99]},
 }
 
+
+//for create the seat
 router.post('/bookseat', async (req, res) => {
     const { seatNumber, section } = req.body;
 
@@ -33,6 +38,9 @@ router.post('/bookseat', async (req, res) => {
     }
 });
 
+
+
+// for reseve the seat 
 router.post('/reserve', async (req,res) =>{
     const { userId, seatNumber} = req.body;
     try{
@@ -40,23 +48,38 @@ router.post('/reserve', async (req,res) =>{
 
         if (!seat|| seat.status !=='empty'){
             return res.status(400).json({
-                message: "Seat is not available",
+                message: "Seat is not available aur seat not create",
                 
             });
         }
-        Seat.status = "reserved";
-        Seat.booked = userId;
-        await seat .save();
+        seat.status = "reserved";
+        seat.bookedBy= userId;
+        await seat .save(); 
 
-        res.json({
-            message: "Seat is reserved",
-        });
+         const expireTime = 3 * 24 * 60 * 60 * 1000; 
+         setTimeout(async () => {
+             const reservedSeat = await Seat.findOne({ seatNumber });
+            
+             if (reservedSeat && reservedSeat.status === "reserved") {
+                 reservedSeat.status = "empty";
+                 reservedSeat.bookedBy = null;
+                 await reservedSeat.save();
+             }
+         }, expireTime);
+ 
+         res.json({
+             message: "Seat is reserved",
+             expiresIn: "3 days",
+         });
+ 
     }catch(err){
         res.status(500).send("error");
     }
 });
 
 
+
+// Get seats status info 
 router.get('/seatsinfo', async (req, res) => {
 
 
@@ -68,6 +91,9 @@ router.get('/seatsinfo', async (req, res) => {
     }
 });
 
+
+
+// seat booking and occupied route
  router.post('/booking', async (req,res) => {
      
     const { seatId, userId, section } = req.body;
