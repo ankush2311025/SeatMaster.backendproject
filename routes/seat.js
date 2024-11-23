@@ -1,6 +1,7 @@
 
 import express from "express";
 import Seat from "../models/Seat.js";
+import User from "../models/User.js";
 
 const router = express.Router();
 
@@ -134,6 +135,39 @@ router.get('/seatsinfo', async (req, res) => {
      } catch(err) {
          res.status(500).send("Error")
      }
+ });
+
+
+
+ //Cancelation the seat
+ router.post('/cancel/:seatId', async (req,res) => {
+
+    const {userId}= req.body;
+    const seatId = req.params.seatId;
+   
+
+    try{
+       
+        const seat = await Seat.findById(seatId);
+
+        if(!seat || seat.status !=='occupied'|| !seat.bookedBy.equals(userId))
+        {
+            return res.status(400).json({
+                message : 'Not Cancel'
+            });
+            
+        } 
+        
+        
+        seat.status = 'empty';
+        seat.bookedBy = null ;
+
+        await seat.save();
+
+        res.json({message : "seat cancel success"});
+    }catch(err){
+        res.status(500).send("noooo")
+    }
  });
 
 export default router;
