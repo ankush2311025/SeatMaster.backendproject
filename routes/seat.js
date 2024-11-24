@@ -19,7 +19,7 @@ const Section = {
 router.post('/bookseat', async (req, res) => {
     const { seatNumber, section } = req.body;
 
-    if (!seatNumber || !section || !Section[section]) {
+    if (!seatNumber || !section || !Section[section]||seatNumber>200) {
         return res.status(400).json({ message: "Invalid seat number or section." });
     }
 
