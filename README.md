@@ -7,7 +7,7 @@ User can Confirm the seat i.e "occupied".
 And User can delete/cancel the occupied seat.
 ## 🌟 Features
 -User authentication (login and signup) and googleauth.
-- Browse movies by categories.
+-Seat is divided in  specific section like VIP, Normal, Economy.
 - Seat selection with dynamic pricing.
 ## 🛠️ Technologies Used
  - **Backend**: Node.js, Express
